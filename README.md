@@ -95,9 +95,6 @@ The dataset consists of various customer usage patterns, call details, and recha
 - **[Your Name]** - Data Science & Machine Learning
 - **[Other Contributors]** - Data Engineering, Business Analysis
 
-## Acknowledgments
-Special thanks to [Telecom Company Name] for providing the dataset and domain knowledge.
-
 ## Contact
-For inquiries or collaborations, please reach out at **[Your Email]**.
+For inquiries or collaborations, please reach out at **anishrane2000@gmial.com**.
 
