@@ -1,100 +1,110 @@
-# Telecom Customer Churn Prediction
+# 📡 Telecom Customer Churn Prediction
 
-## Business Problem Overview
-In the telecom industry, customers can choose from multiple service providers and frequently switch between them. This results in an average annual churn rate of **15-25%**. Given that acquiring a new customer is **5-10 times more expensive** than retaining an existing one, telecom companies must focus on customer retention strategies. This project aims to build a predictive model to identify customers likely to churn and provide actionable insights for retention efforts.
+![Python](https://img.shields.io/badge/Python-3.x-3776AB?style=flat-square&logo=python&logoColor=white)
+![scikit-learn](https://img.shields.io/badge/scikit--learn-Pipelines-F7931E?style=flat-square&logo=scikitlearn&logoColor=white)
+![imbalanced-learn](https://img.shields.io/badge/imbalanced--learn-SMOTE-8A2BE2?style=flat-square)
+![Status](https://img.shields.io/badge/Status-Complete-1D9E75?style=flat-square)
 
-## Data Overview
-The dataset consists of various customer usage patterns, call details, and recharge behaviors. Below are the key acronyms used in the dataset:
+> Predicting which **customers are about to leave** a telecom operator — using 3 months of usage behaviour, PCA, SMOTE and three ML pipelines.
 
-### **Call & Network Metrics**
-| Acronym  | Description  |
-|----------|-------------|
-| CIRCLE_ID | Telecom circle area to which the customer belongs |
-| LOC      | Local calls within the same telecom circle |
-| STD      | STD calls outside the calling circle |
-| IC       | Incoming calls |
-| OG       | Outgoing calls |
-| T2T      | Calls within the same operator (mobile-to-mobile) |
-| T2M      | Calls from the operator to another operator's mobile |
-| T2O      | Calls from the operator to another operator's fixed line |
-| T2F      | Calls from the operator to its own fixed lines |
-| T2C      | Calls from the operator to its own call center |
-| ONNET    | All calls within the same operator network |
-| OFFNET   | All calls outside the operator’s network |
-| ROAM     | Indicates if the customer was roaming during the call |
-| SPL      | Special calls |
-| ISD      | International calls |
+| | Logistic Regression | **Random Forest** | AdaBoost |
+|---|---|---|---|
+| Test accuracy | 0.850 | **0.919** | 0.839 |
+| Precision (churn) | 0.389 | **0.592** | 0.368 |
+| **Recall (churn)** | **0.835** | 0.651 | 0.820 |
+| F1 (churn) | 0.531 | **0.620** | 0.508 |
+| ROC-AUC | 0.906 | **0.907** | 0.904 |
 
-### **Usage & Financial Metrics**
-| Acronym  | Description  |
-|----------|-------------|
-| ARPU     | Average Revenue Per User |
-| MOU      | Minutes of Usage (voice calls) |
-| AON      | Age on Network (number of days a customer has been with the operator) |
-| RECH     | Recharge transactions |
-| NUM      | Number of recharge transactions |
-| AMT      | Recharge amount in local currency |
-| MAX      | Maximum recharge amount |
-| DATA     | Mobile internet usage |
-| 2G, 3G   | Type of network used |
-| AV       | Average usage values |
-| VOL      | Mobile internet usage volume in MB |
-| PCK      | Prepaid service schemes (PACKS) |
-| NIGHT    | Special schemes for night usage |
-| MONTHLY  | Service schemes with a month-long validity |
-| SACHET   | Short-term service schemes (less than a month) |
-| VBC      | Volume-based cost (charged per usage when no pack is purchased) |
-| FB_USER  | Service schemes for Facebook and social networking usage |
+*Evaluated on a held-out 20% split (14,000 customers, ~10% churners).*
 
-### **Time-based Metrics**
-| Acronym  | Description  |
-|----------|-------------|
-| *.6      | KPI for June |
-| *.7      | KPI for July |
-| *.8      | KPI for August |
+---
 
-## Project Objective
-- **Predict customer churn** based on call patterns, recharge behavior, and internet usage.
-- **Identify key factors** that contribute to churn.
-- **Provide actionable insights** to reduce churn and improve customer retention strategies.
+## 📌 Business Problem
 
-## Methodology
-1. **Data Preprocessing:**
-   - Handling missing values
-   - Encoding categorical variables
-   - Feature engineering
-   
-2. **Exploratory Data Analysis (EDA):**
-   - Understanding customer behavior
-   - Identifying key trends affecting churn
-   
-3. **Feature Selection & Engineering:**
-   - Removing multicollinearity
-   - Selecting the most relevant predictors
-   
-4. **Model Development:**
-   - Building and evaluating classification models
-   - Comparing performance using accuracy, precision, recall, and F1-score
-   
-5. **Insights & Recommendations:**
-   - Identifying high-risk churn segments
-   - Suggesting proactive customer retention strategies
+In the telecom industry customers switch operators easily, leading to **15–25% annual churn**. Acquiring a new customer costs **5–10× more** than retaining one, so operators want to:
 
-## Expected Outcomes
-- A machine learning model capable of predicting customer churn with high accuracy.
-- Insights into the most important factors influencing churn.
-- Actionable recommendations for improving customer retention.
+1. **Predict** which customers are likely to churn, early enough to act.
+2. **Understand** which usage signals indicate churn, so retention offers can be targeted.
 
-## Tools & Technologies Used
-- **Programming Language:** Python
-- **Libraries:** Pandas, NumPy, Scikit-learn, Matplotlib, Seaborn
-- **Machine Learning Models:** Logistic Regression, Random Forest, Gradient Boosting
-- **Data Visualization Tools:** Matplotlib, Seaborn
+## 🗂️ Data
 
-## Contributors
-- **[Your Name]** - Data Science & Machine Learning
-- **[Other Contributors]** - Data Engineering, Business Analysis
+| File | Rows | Description |
+|---|---|---|
+| `train.csv` | 69,999 | 172 columns: recharge, ARPU, call minutes (local/STD/ISD/roaming, on-net/off-net), data usage, 2G/3G packs for June–August, plus `churn_probability` label |
+| `test.csv` | 30,000 | Same features without the label (used for the final submission) |
+| `data_dictionary.csv` | — | Acronym glossary (ARPU, MOU, T2T, ONNET, VBC…) |
 
-## Contact
-For inquiries or collaborations, please reach out at **anishrane2000@gmial.com**.
+## 🔬 Approach
 
+```mermaid
+flowchart LR
+    A[Raw usage data<br/>172 cols] --> B[Feature engineering<br/>regex-grouped KPIs]
+    B --> C[Missing-value analysis<br/>missingno + imputation]
+    C --> D[EDA on high-value customers]
+    D --> E[Outlier capping<br/>k-sigma]
+    E --> F[Scaling + PCA]
+    F --> G[SMOTE on training set only]
+    G --> H1[Logistic Regression]
+    G --> H2[Random Forest]
+    G --> H3[AdaBoost]
+    H1 & H2 & H3 --> I[Hyper-parameter search + evaluation]
+```
+
+- **Feature engineering** – grouped raw columns by meaning (recharge amounts, ARPU, outgoing/incoming minutes, roaming, special calls, ISD, data packs, social-media scheme users) to create interpretable aggregates.
+- **Missing values** – visualised with `missingno`, then imputed per feature group.
+- **Outliers** – capped with the k-sigma method instead of dropping rows.
+- **Dimensionality reduction** – PCA to compress highly correlated usage features.
+- **Class imbalance (~10% churn)** – SMOTE applied **only to the training data** to avoid leakage.
+- **Models** – three reusable `sklearn` pipelines, tuned with `GridSearchCV` / `RandomizedSearchCV`.
+
+## 📈 Results & Model Choice
+
+The "best" model depends on the business cost of each error:
+
+- **Random Forest** gives the best overall balance (**accuracy 0.92, F1 0.62**) — use it when retention offers are expensive and false alarms must be limited. It fits the training data almost perfectly, so its train–test gap is the largest.
+- **Logistic Regression / AdaBoost** catch **~83% of churners** (highest recall) at the cost of more false positives — use them when *missing* a churner is far more costly than sending an unnecessary offer.
+
+All three reach **ROC-AUC ≈ 0.90**, showing the engineered features separate churners well. The final Kaggle-style submission (`Results_19Jan.csv`) was generated with the AdaBoost pipeline.
+
+## 💡 What I Learned
+
+- Accuracy is misleading on imbalanced data — **precision, recall and ROC-AUC** tell the real story.
+- Model selection is a **business decision**: the precision–recall trade-off maps directly to campaign cost.
+- Applying SMOTE, scaling and PCA **inside the training fold only** is essential to avoid leakage.
+
+## 🚀 How to Run
+
+```bash
+git clone https://github.com/AnishRane-cox/Telecom-Churn-Case-Study.git
+cd Telecom-Churn-Case-Study
+pip install pandas numpy matplotlib seaborn missingno scikit-learn imbalanced-learn jupyter
+jupyter notebook telecom-churn_casestudy.ipynb
+```
+
+## 📁 Repository Structure
+
+```
+├── telecom-churn_casestudy.ipynb   # End-to-end analysis & modelling
+├── train.csv / test.csv            # Data
+├── data_dictionary.csv             # Column glossary
+├── Results_19Jan.csv               # Predictions on the unseen test set
+└── README.md
+```
+
+## 🔭 Next Steps
+
+- Tune the **decision threshold** on the Random Forest to trade some precision for recall.
+- Try gradient boosting (XGBoost / LightGBM) and SHAP for feature-level explanations.
+- Build a churn-risk score that combines probability with customer value (ARPU).
+
+---
+
+## 👤 Author
+
+**Anish Rane** — Data & AI Engineer · MSc Machine Learning & AI (LJMU) · Mechanical Engineer
+
+[![Portfolio](https://img.shields.io/badge/Portfolio-1D9E75?style=flat-square&logo=githubpages&logoColor=white)](https://anishrane-cox.github.io/Portfolio/)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/anish-rane/)
+[![GitHub](https://img.shields.io/badge/GitHub-AnishRane--cox-181717?style=flat-square&logo=github)](https://github.com/AnishRane-cox)
+
+⭐ If you found this useful, consider starring the repo.
